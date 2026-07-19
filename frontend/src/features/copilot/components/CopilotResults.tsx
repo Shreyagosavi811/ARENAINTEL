@@ -10,7 +10,7 @@ interface Props {
 
 export const CopilotResults: React.FC<Props> = ({ results, originalInput }) => {
   return (
-    <div className="results-container" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>
+    <div className="results-container" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }} aria-live="polite">
       <div className="card" style={{ borderLeft: '4px solid var(--text-muted)' }}>
         <h3 style={{ fontSize: '0.85rem', textTransform: 'uppercase', color: 'var(--text-muted)', margin: '0 0 8px 0' }}>Observed Input</h3>
         <p style={{ margin: 0, fontStyle: 'italic' }}>"{originalInput}"</p>
@@ -20,6 +20,10 @@ export const CopilotResults: React.FC<Props> = ({ results, originalInput }) => {
         <div className="card-header">
           <h3>Retrieved Knowledge Base Sources</h3>
         </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', background: 'var(--bg-surface-elevated)', padding: '8px', borderRadius: '4px' }}>
+          <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>RETRIEVAL CONFIDENCE</span>
+          <span style={{ color: 'var(--status-ai)', fontWeight: 'bold', fontSize: '0.9rem' }}>{results.retrieval_confidence || 'High'}</span>
+        </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {results.sources.map(src => (
             <div key={src} style={{ background: 'var(--bg-app)', padding: '8px 12px', borderRadius: '4px', border: '1px solid var(--border-subtle)', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
@@ -28,6 +32,40 @@ export const CopilotResults: React.FC<Props> = ({ results, originalInput }) => {
           ))}
         </div>
       </div>
+      
+      {results.impact_estimate && (
+        <div className="card" style={{ background: 'var(--bg-surface-elevated)', border: '1px solid var(--status-ai)' }}>
+          <h3 style={{ margin: '0 0 1rem 0', color: 'var(--status-ai)', fontSize: '1rem', textTransform: 'uppercase', letterSpacing: '1px' }}>OPERATIONAL IMPACT — AI ESTIMATE</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '1rem' }}>
+            <div>
+              <strong style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-muted)' }}>Potential Outcome</strong>
+              <span style={{ fontSize: '1.1rem' }}>{results.impact_estimate.potential_outcome}</span>
+            </div>
+            <div>
+              <strong style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-muted)' }}>Estimated Response Time</strong>
+              <span style={{ fontSize: '1.1rem' }}>{results.impact_estimate.estimated_response_time_saved} saved</span>
+            </div>
+            <div>
+              <strong style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-muted)' }}>Affected Zones</strong>
+              <span style={{ fontSize: '1.1rem' }}>{results.impact_estimate.affected_zones.join(' · ')}</span>
+            </div>
+            <div>
+              <strong style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-muted)' }}>Risk Trajectory</strong>
+              <span style={{ fontSize: '1.1rem' }}>{results.impact_estimate.risk_trajectory}</span>
+            </div>
+          </div>
+          <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '1rem', display: 'flex', gap: '2rem' }}>
+            <div>
+              <strong style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-muted)' }}>Confidence</strong>
+              <span className={`badge badge-${results.impact_estimate.confidence.toLowerCase() === 'high' ? 'nominal' : 'warning'}`}>{results.impact_estimate.confidence}</span>
+            </div>
+            <div style={{ flex: 1 }}>
+              <strong style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-muted)' }}>Basis</strong>
+              <span style={{ fontSize: '0.9rem' }}>{results.impact_estimate.basis}</span>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="card ai-boundary">
         <div className="flex-between" style={{ marginBottom: '1rem' }}>

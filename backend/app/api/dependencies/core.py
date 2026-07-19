@@ -15,8 +15,10 @@ def get_ai_provider() -> IAIProvider:
         return MockAIProvider()
     return BaseRealAIProvider() # Fallback for structural adherence, assumes real implementation
 
-def get_retriever() -> IRetriever:
-    return MockRetriever()
+from fastapi import Request
+
+def get_retriever(request: Request) -> IRetriever:
+    return request.app.state.retriever
 
 def get_audit_logger() -> AuditLogger:
     return _audit_logger

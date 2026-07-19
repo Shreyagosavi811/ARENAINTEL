@@ -25,6 +25,18 @@ export const CopilotForm: React.FC = () => {
         <p style={{ color: 'var(--text-muted)', margin: '0.5rem 0 0 0' }}>Submit observational reports for instant SOP retrieval and AI risk analysis.</p>
       </header>
 
+      <div className="card" style={{ marginBottom: '1.5rem', background: 'var(--bg-app)', borderLeft: '4px solid var(--status-ai)' }}>
+        <h3 style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)', margin: '0 0 12px 0', letterSpacing: '1px' }}>ACTIVE MATCHDAY CONTEXT <span style={{color: 'var(--status-ai)', float: 'right'}}>● SIMULATED TELEMETRY</span></h3>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1rem', fontSize: '0.9rem' }}>
+          <div><strong style={{color: 'var(--text-muted)'}}>MATCH</strong><br/>Mexico vs Brazil</div>
+          <div><strong style={{color: 'var(--text-muted)'}}>VENUE</strong><br/>ARENAINTEL Stadium</div>
+          <div><strong style={{color: 'var(--text-muted)'}}>PHASE</strong><br/>Pre-Match</div>
+          <div><strong style={{color: 'var(--text-muted)'}}>ATTENDANCE</strong><br/>58,420 / 62,000</div>
+          <div><strong style={{color: 'var(--text-muted)'}}>WEATHER</strong><br/>Heavy Rain Expected</div>
+          <div><strong style={{color: 'var(--text-muted)'}}>TRANSPORT</strong><br/>Metro Line 2 Delayed</div>
+        </div>
+      </div>
+
       <form onSubmit={handleSubmit} className="card">
         <div style={{ display: 'flex', gap: '8px', marginBottom: 'var(--space-md)', flexWrap: 'wrap' }}>
           {EXAMPLES.map(ex => (

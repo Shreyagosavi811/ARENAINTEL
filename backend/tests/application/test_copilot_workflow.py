@@ -1,5 +1,5 @@
 import pytest
-from app.application.copilot.schemas import AnalyzeSituationRequest, CopilotAIResponse, AIRecommendationAction
+from app.application.copilot.schemas import AnalyzeSituationRequest, CopilotAIResponse, AIRecommendationAction, OperationalImpact
 from app.application.copilot.analyze_situation import CopilotUseCase
 from app.application.copilot.context_service import ContextService
 from app.application.copilot.prompt_builder import PromptBuilder
@@ -13,7 +13,15 @@ class CustomMockAI(IAIProvider):
             risk_level="high",
             risks=["Risk A"],
             recommendations=[AIRecommendationAction(action="Evac", priority="high", reason="Safe", requires_approval=True)],
-            uncertainties=["Missing weather data"]
+            uncertainties=["Missing weather data"],
+            impact_estimate=OperationalImpact(
+                potential_outcome="Reduced risk",
+                estimated_response_time_saved="5 min",
+                affected_zones=["Zone A"],
+                risk_trajectory="High -> Low",
+                confidence="High",
+                basis="Test Basis"
+            )
         )
     async def generate_text(self, p): return ""
     async def generate_translated_communication(self, p, t): return ""

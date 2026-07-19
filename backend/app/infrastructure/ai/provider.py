@@ -2,6 +2,7 @@ from typing import TypeVar, Type, Any
 from pydantic import BaseModel, ValidationError
 import asyncio
 import logging
+import httpx
 from app.core.exceptions import AIProviderUnavailableError
 
 logger = logging.getLogger("stadiumops.ai")
@@ -68,6 +69,7 @@ class BaseRealAIProvider(IAIProvider):
         self.timeout_seconds = timeout_seconds
         self.max_retries = max_retries
 
+
     async def _safe_execute(self, func, *args, **kwargs) -> Any:
         """Executes a function with timeout and safe retry handling."""
         attempt = 0
@@ -76,12 +78,12 @@ class BaseRealAIProvider(IAIProvider):
                 attempt += 1
                 return await asyncio.wait_for(func(*args, **kwargs), timeout=self.timeout_seconds)
             except asyncio.TimeoutError:
-                logger.warning(f"AI Provider timeout on attempt {attempt}")
+                logger.error(f"AI_PROVIDER_TIMEOUT - Attempt {attempt}/{self.max_retries} exceeded {self.timeout_seconds}s limit.")
                 if attempt >= self.max_retries:
                     raise AIProviderUnavailableError("AI Provider timed out after max retries.")
-            except Exception as e:
+            except (httpx.RequestError, httpx.HTTPStatusError) as e:
                 # Log metadata, NEVER log the prompt itself as it may contain sensitive data
-                logger.error(f"AI Provider error on attempt {attempt}: {str(e)}")
+                logger.error(f"AI Provider network error on attempt {attempt}: {str(e)}")
                 if attempt >= self.max_retries:
                     raise AIProviderUnavailableError(f"AI Provider failed: {str(e)}")
                 await asyncio.sleep(2 ** attempt) # Exponential backoff
