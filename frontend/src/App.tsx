@@ -3,6 +3,7 @@ import { CopilotForm } from './features/copilot/components/CopilotForm'
 import { ScenarioForm } from './features/scenarios/components/ScenarioForm'
 import { IncidentForm } from './features/incidents/components/IncidentForm'
 import { Dashboard } from './features/dashboard/components/Dashboard'
+import { ArenaIntelLogo } from './components/ArenaIntelLogo'
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'dashboard' | 'copilot' | 'scenarios' | 'incidents'>('dashboard')
@@ -12,11 +13,16 @@ const App: React.FC = () => {
       <a href="#main-content" className="skip-link">Skip to main content</a>
       
       <header role="banner" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div>
-          <h1 style={{ margin: 0 }}>ARENAINTEL</h1>
-          <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-muted)', letterSpacing: '1px' }}>
-            FIFA WORLD CUP 2026 &bull; MATCHDAY OPERATIONS
-          </p>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-md)' }}>
+          <ArenaIntelLogo size={45} />
+          <div>
+            <h1 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '4px' }}>
+              ARENA<span style={{ color: 'var(--status-ai)' }}>INTEL</span>
+            </h1>
+            <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-muted)', letterSpacing: '1px' }}>
+              FIFA WORLD CUP 2026 &bull; MATCHDAY OPERATIONS
+            </p>
+          </div>
         </div>
         <div className="flex-between gap-md" style={{ textAlign: 'right' }}>
           <div>
