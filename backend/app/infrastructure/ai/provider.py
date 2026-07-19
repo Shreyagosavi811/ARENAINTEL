@@ -44,14 +44,31 @@ class MockAIProvider(IAIProvider):
             raise AIProviderUnavailableError("AI Provider timed out.")
             
         if self.should_return_malformed:
-            # We simulate a Pydantic validation error by passing missing/bad data
             raise ValidationError.from_exception_data(title="MockError", line_errors=[])
             
-        # In a real mock, we would use a library or predefined fixtures to generate a valid T.
-        # Since T could be anything, we rely on the caller passing a mock-compatible schema, 
-        # or we just return a mocked dict matched to the schema's kwargs (requires specific setup per schema).
-        # For simplicity in this demo mock, we assume the schema can be instantiated with empty/default args.
-        pass
+        # Return a valid mock for CopilotAIResponse specifically for local demo testing
+        from app.application.copilot.schemas import CopilotAIResponse, AIRecommendationAction, OperationalImpact
+        if schema.__name__ == "CopilotAIResponse":
+            return CopilotAIResponse(
+                summary="[MOCK AI] Crowd surge detected at Gate C.",
+                risk_level="high",
+                risks=["Crush risk", "Delayed entry"],
+                recommendations=[
+                    AIRecommendationAction(action="Open overflow gates", priority="high", reason="Alleviate pressure", requires_approval=True)
+                ],
+                uncertainties=["Exact crowd size unknown"],
+                impact_estimate=OperationalImpact(
+                    potential_outcome="Risk averted",
+                    estimated_response_time_saved="10m",
+                    affected_zones=["Gate C"],
+                    risk_trajectory="High -> Low",
+                    confidence="High",
+                    basis="SOP Match"
+                )
+            )
+        
+        # Fallback for other schemas
+        return schema()
         
     async def generate_translated_communication(self, message: str, target_language: str) -> str:
         return f"[Translated to {target_language}]: {message}"
